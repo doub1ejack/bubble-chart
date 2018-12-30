@@ -11,9 +11,7 @@ function bubbleChart() {
         var svg = div.selectAll('svg');
 
         // set chart width/height
-        svg
-            .attr('width', width)
-            .attr('height', height);
+        svg.attr('width', width).attr('height', height);
 
         // var tooltip = selection
         //     .append("div")
@@ -28,24 +26,9 @@ function bubbleChart() {
         //     .style("width", "400px")
         //     .text("");
 
-        var simulation = d3.forceSimulation(data)
-            .force("charge", d3.forceManyBody().strength([-100]))
 
-            // .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide())
-            .force("x", d3.forceX().x(function(d) {
-              return d[columnForColors].length;
-            }))
-            .force("y", d3.forceY())
-            .on("tick", ticked);
 
-        function ticked(e) {
-            node
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-        }
-
-        var colorCircles = d3.scaleOrdinal(d3.schemeCategory10);
+        var colorCircles = d3.scaleOrdinal(d3.schemeCategory10);  //schemeCategory20c
         var scaleRadius = d3.scaleLinear()
             .domain(
                 [
@@ -57,7 +40,22 @@ function bubbleChart() {
                     })
                 ]
             )
-            .range([5, 18])
+            .range([30, 75])
+
+        // Define gravitational forces 
+        var simulation = d3.forceSimulation(data)
+            .force('collision', d3.forceCollide().radius(function(d) {
+                return scaleRadius(d[columnForRadius])
+            }))
+            .force("x", d3.forceX())
+            .force("y", d3.forceY())
+            .on("tick", ticked);
+
+        function ticked(e) {
+            node
+                .attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+        }
 
         d3.selection.prototype.moveToFront = function() {
             return this.each(function(){
@@ -69,29 +67,31 @@ function bubbleChart() {
             .data(data)
             .enter()
                 .append("circle")
-                    .attr('r', function(d) {
-                        return scaleRadius(d[columnForRadius])
-                    })
-                    .style("fill", function(d) {
-                        return colorCircles(d[columnForColors])
-                    })
+                    .attr('r', d => scaleRadius(d[columnForRadius]))
+                    .style("fill", d => colorCircles(d[columnForColors]))
+                    .style("stroke", "white")
+                    .style("stroke-width", 1)
                     .attr('transform', 'translate(' + [width / 2, height / 2] + ')')
-
                     .on("mouseover", function(d) {
                         d3.select(this)
                             .moveToFront()
+                            .style("stroke", "white")
+                            .style("stroke-width", 4)
                             .transition()
                             .duration(1000)
                             .attr("r", 100)
                     })
                     .on("mouseout", function(d) {
                         d3.select(this)
+                            .style("stroke-width", 1)
                             .transition()
                             .duration(1000)
                             .attr("r", function(d) {
                                 return scaleRadius(d[columnForRadius])
                             });
                     })
+
+                
             // .on("mouseover", function(d) {
             //     tooltip.html(d[columnForColors] + "<br>" + d.title + "<br>" + d[columnForRadius] + " hearts");
             //     return tooltip.style("visibility", "visible");
