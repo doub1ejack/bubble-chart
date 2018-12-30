@@ -42,6 +42,20 @@ function bubbleChart() {
             )
             .range([30, 75])
 
+        
+        //Filter for the outside glow for selected circles
+        var defs = svg.append("defs");  //Container for the gradients
+        var filter = defs.append("filter")
+            .attr("id","glow");
+        filter.append("feGaussianBlur")
+            .attr("stdDeviation","4.5")
+            .attr("result","coloredBlur");
+        var feMerge = filter.append("feMerge");
+        feMerge.append("feMergeNode")
+            .attr("in","coloredBlur");
+        feMerge.append("feMergeNode")
+            .attr("in","SourceGraphic")
+
         // Define gravitational forces 
         var simulation = d3.forceSimulation(data)
             .force('collision', d3.forceCollide().radius(function(d) {
@@ -77,6 +91,7 @@ function bubbleChart() {
                             .moveToFront()
                             .style("stroke", "white")
                             .style("stroke-width", 4)
+                            .style("filter", "url(#glow)")
                             .transition()
                             .duration(1000)
                             .attr("r", 100)
@@ -84,6 +99,7 @@ function bubbleChart() {
                     .on("mouseout", function(d) {
                         d3.select(this)
                             .style("stroke-width", 1)
+                            .style("filter", null)
                             .transition()
                             .duration(1000)
                             .attr("r", function(d) {
