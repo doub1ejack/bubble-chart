@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<body>
+<div class="chart-example" id="chart"><svg></svg></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.6.0/d3.min.js"></script>
+<script src="forceSim.js"></script>
+<script>
+
+  // load data from csv in currrent dir
+  d3.csv('medium_january.csv', function(error, data) {
+    if (error) {
+        console.error('Error getting or parsing the data.');
+        throw error;
+    }
+
+    // load chart from forceSim.js & set dimensions
+    var chart = bubbleChart().width(800).height(600);
+
+    // selection.datum() returns the bound datum for the first 
+    // element in the selection and doesn't join the specified 
+    // array of data with the selected elements
+    d3.select('#chart').datum(data).call(chart);
+  });
+
+</script>
+</body>
+</html>
