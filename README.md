@@ -18,4 +18,4 @@
 * Minor styling
 * Chart reads from csv file
 
-[![screenshot](screenshot.jpg?raw=true)]
+[![screenshot](screenshot.png?raw=true)]
