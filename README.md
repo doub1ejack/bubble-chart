@@ -11,7 +11,7 @@ I'd like to use D3js to display all the skills I have as awesome bubbles that ar
 How to see this working:
 
 1. pull the repo
-2. run a simple web server (eg `python -m SimpleHTTPServer`)
+2. run a simple web server (eg `python -m SimpleHTTPServer && open http://0.0.0.0:8000/forceSim.html`)
 
 ### Current State
 
